@@ -77,6 +77,7 @@ pip install -r requirements.txt
 ### Contact
  
  email : harop6770@gmail.com
+ 
  discord username : PedroGeometrias
 
 
