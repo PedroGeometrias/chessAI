@@ -58,11 +58,10 @@ pip install -r requirements.txt
  > **Note:** remember, when running, the server comes first, then the gui, then the intermediateTranslation.py
 
 ## Windows
- you can run make for both if you have mingw32-make
+ you can run make for both if you have the necessary binaries, by stting up OS=windows
 
 ```
-mingw32-make server
-mingw32-make gui
+make OS=windows
 
 ```
  you can install the python lybraries in the same way as linux I think
