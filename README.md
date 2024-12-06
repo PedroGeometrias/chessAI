@@ -3,7 +3,8 @@
 I have written a chess AI with TensorFlow and wanted to integrate it with a GUI written in C, so I made a server in 
 C that handles the communication. I have drawn a diagram for this project. It's in Portuguese, but it should help with 
 understanding my idea:
-![Diagrama](https://github.com/PedroGeometrias/chessAI/Diagrama.jpeg) 
+<img src="https://github.com/PedroGeometrias/chessAI/blob/main/Diagrama.jpeg">
+
 
 ## PYTHON side of things
 
