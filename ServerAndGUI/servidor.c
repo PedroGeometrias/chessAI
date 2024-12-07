@@ -26,10 +26,10 @@
 #define PORT 8080
 #define BUFF_SIZE 100
 
-// Global variables
+// define
 int serverSocket = -1;
 
-// Function prototypes
+// prototipos
 void initializePlatform();
 void cleanupPlatform();
 int createServerSocket();
@@ -43,30 +43,40 @@ void handleSignal(int sig);
 int handleClientCommunication(int fromClientSocket, int toClientSocket, char *buffer);
 
 int main() {
-    initializePlatform();  // Initialize platform-specific networking
 
+    // inicializo a plataforma, no windows se tem de inicializar um socket
+    initializePlatform();  
+
+    // sinal de interrupcao
     signal(SIGINT, handleSignal);
+
+    // creando o socket
     printf("Inicializando servidor...\n");
     serverSocket = createServerSocket();
 
+    // temos 2 clientes, o GUI e o intermediateTranslator.c
     int clientSocket1 = acceptConnection(serverSocket);
     int clientSocket2 = acceptConnection(serverSocket);
 
+    // loop que controla a comunicacao
     while (1) {
+        // string enviada de um cliente ao outro
         char fen[BUFF_SIZE];
         if (handleClientCommunication(clientSocket1, clientSocket2, fen) == -1) break;
         if (handleClientCommunication(clientSocket2, clientSocket1, fen) == -1) break;
     }
 
+    // fechando os sockets
     close(clientSocket1);
     close(clientSocket2);
     close(serverSocket);
 
-    cleanupPlatform();  // Clean up platform-specific resources
+    // limpando no windows
+    cleanupPlatform();  
     return 0;
 }
 
-// Initialize platform-specific networking
+// inicializando no windows 
 void initializePlatform() {
 #ifdef _WIN32
     WSADATA wsa;
@@ -77,13 +87,14 @@ void initializePlatform() {
 #endif
 }
 
-// Clean up platform-specific networking
+// limpando de plataforma especifica ( windows )
 void cleanupPlatform() {
 #ifdef _WIN32
     WSACleanup();
 #endif
 }
 
+// fechando server
 void handleSignal(int sig) {
     printf("Received signal %d, shutting down...\n", sig);
     if (serverSocket != -1) {
@@ -93,6 +104,7 @@ void handleSignal(int sig) {
     exit(0);
 }
 
+// criando e setando
 int createServerSocket() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
@@ -113,12 +125,14 @@ int createServerSocket() {
     return serverSocket;
 }
 
+// structure address
 void setupServerAddress(struct sockaddr_in *address, int port) {
     address->sin_family = AF_INET;
     address->sin_port = htons(port);
     address->sin_addr.s_addr = INADDR_ANY;
 }
 
+// socket
 int bindSocket(int serverSocket, const struct sockaddr_in *address) {
     if (bind(serverSocket, (struct sockaddr *)address, sizeof(*address)) == -1) {
 #ifdef _WIN32
@@ -132,6 +146,7 @@ int bindSocket(int serverSocket, const struct sockaddr_in *address) {
     return 0;
 }
 
+// conexao
 int listenForConnections(int serverSocket) {
     if (listen(serverSocket, 5) == -1) {
 #ifdef _WIN32
@@ -160,6 +175,7 @@ int acceptConnection(int serverSocket) {
     return clientSocket;
 }
 
+// dados sao recebidos com essa funcao
 void receiveData(int clientSocket, char *buffer, size_t bufferSize) {
     ssize_t bytesReceived = recv(clientSocket, buffer, bufferSize - 1, 0);
     if (bytesReceived == -1) {
@@ -180,6 +196,7 @@ void receiveData(int clientSocket, char *buffer, size_t bufferSize) {
     }
 }
 
+// enviado dados
 void sendData(int clientSocket, const char *message) {
     if (send(clientSocket, message, strlen(message), 0) == -1) {
 #ifdef _WIN32
@@ -192,6 +209,7 @@ void sendData(int clientSocket, const char *message) {
     }
 }
 
+// comunicacao
 int handleClientCommunication(int fromClientSocket, int toClientSocket, char *buffer) {
     memset(buffer, 0, BUFF_SIZE);
     receiveData(fromClientSocket, buffer, BUFF_SIZE);

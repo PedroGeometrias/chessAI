@@ -1,5 +1,7 @@
 #include "communicationLayer.h"
 
+
+// criacao do socket
 int createSocket() {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -9,6 +11,7 @@ int createSocket() {
     return sock;
 }
 
+// setacando a structure address com o ip local e a porta
 void setupServerAddress(struct sockaddr_in *address, const char *ip, int port) {
     address->sin_family = AF_INET;
     address->sin_port = htons(port);
@@ -18,6 +21,7 @@ void setupServerAddress(struct sockaddr_in *address, const char *ip, int port) {
     }
 }
 
+// conectando no servidor
 int connectToServer(int sock, const struct sockaddr_in *address) {
     printf("Attempting to connect to the server...\n");
     if (connect(sock, (struct sockaddr *)address, sizeof(*address)) == -1) {
@@ -31,6 +35,7 @@ int connectToServer(int sock, const struct sockaddr_in *address) {
 }
 
 
+// enviando os dados para o servidor no socket
 void sendDataToServer(int sock, const char *message) {
     if (send(sock, message, strlen(message), 0) == -1) {
         perror("send");
@@ -39,6 +44,7 @@ void sendDataToServer(int sock, const char *message) {
     }
 }
 
+// recebendo dados
 void receiveDataFromServer(int sock, char *buffer, size_t bufferSize) {
     ssize_t bytesReceived = recv(sock, buffer, bufferSize - 1, 0);
     if (bytesReceived == -1) {
@@ -49,7 +55,8 @@ void receiveDataFromServer(int sock, char *buffer, size_t bufferSize) {
     buffer[bytesReceived] = '\0';
 }
 
-// Platform-specific logic
+// FUNCOES DO WINDOWS //
+
 void initializePlatform() {
 #ifdef _WIN32
     WSADATA wsa;
