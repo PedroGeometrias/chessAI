@@ -41,7 +41,6 @@ understanding my idea:
 - gcc
 - make (I have written a make file to help the compiling process)
 - mingw32
-- mingw32-make
 
 ## Linux
  you can run make on the ServerAndGUI dir, it will generate two targets, server and gui, or you can use this command on the dir with the files
