@@ -1,7 +1,17 @@
 // Autor : Pedro De Oliveira Haro
 // Motivo : Interface Grafica que permite usuarios jogarem contra minha Inteligencia Artificial
 
-// Includes
+// Eu odeio Winodows
+#ifdef _WIN32
+#include <SDL.h>
+#include <SDL_events.h>
+#include <SDL_rect.h>
+#include <SDL_render.h>
+#include <SDL_video.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+#else
+// Includes que fincionam
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_rect.h>
@@ -9,12 +19,14 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#endif
+
+// outros includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "communicationLayer.h"
 #include "stack.h"
-
 
 // representacao do tabuleiro na memoria
 typedef struct{

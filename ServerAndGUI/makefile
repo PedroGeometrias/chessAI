@@ -1,51 +1,42 @@
-# Definindo compilador
+# Default Compiler and Flags
 CC = gcc
-CFLAGS = -Wall -O2 -Wno-address
+CFLAGS = -Wall -O2 -Wno-address -w
 LDFLAGS = 
 
-# Fazendo isso ser multi plataforma 
-OS := $(shell uname)
-# caso seja linux 
-ifeq ($(OS), Linux)
-    PLATFORM = linux
-	# bibliotecas
+# Platform Selection
+PLATFORM ?= $(shell uname)
+
+ifeq ($(PLATFORM), Linux)
     GUI_LDFLAGS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf
-	# flags
     GUI_CFLAGS = $(shell sdl2-config --cflags)
-	# outputs
     SERVER_OUTPUT = server
     GUI_OUTPUT = gui
-# caso seja windows
-else ifeq ($(OS), Windows_NT)
-    PLATFORM = windows
-	# Usar MINGW
+else ifeq ($(PLATFORM), windows)
     CC = x86_64-w64-mingw32-gcc
-	# windows tem o .exe no final
     SERVER_OUTPUT = server.exe
     GUI_OUTPUT = gui.exe
-	# flags
-    GUI_LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+    GUI_CFLAGS = -I$(PWD)/SDL2-2.30.9/x86_64-w64-mingw32/include/SDL2
+    GUI_LDFLAGS = -L/home/pedro/projects/python/chessAI/ServerAndGUI/SDL2-2.30.9/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lws2_32
+    SERVER_LDFLAGS = -lws2_32
 else
-	# caso seja alguma outra plataforma 
-    $(error Unsupported platform: $(OS))
+    $(error Unsupported platform: $(PLATFORM))
 endif
 
-# Arquivos fonte usados na compilacao
+# Source Files
 SERVER_SRC = servidor.c
 GUI_SRC = GUI.c stack.c communicationLayer.c
 
-# Resultados
+# Build Targets
 all: $(SERVER_OUTPUT) $(GUI_OUTPUT)
 
-# Server
 $(SERVER_OUTPUT): $(SERVER_SRC)
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $< $(SERVER_LDFLAGS)
 
-# GUI 
 $(GUI_OUTPUT): $(GUI_SRC)
 	$(CC) $(CFLAGS) $(GUI_CFLAGS) -o $@ $^ $(GUI_LDFLAGS)
 
-# Limpo o resultado 
+# Clean
 .PHONY: clean
 clean:
 	rm -f $(SERVER_OUTPUT) $(GUI_OUTPUT)
+

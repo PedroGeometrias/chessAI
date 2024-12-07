@@ -1,22 +1,4 @@
 #include "communicationLayer.h"
-// Windows-specific headers
-#ifdef _WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#pragma comment(lib, "ws2_32.lib")
-#define close closesocket
-#else
-// Linux-specific headers
-#include <unistd.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#endif
-// Other common headers
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 
 int createSocket() {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
